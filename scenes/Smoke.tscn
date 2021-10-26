@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/smoke_particle1.png" type="Texture" id=1]
+[ext_resource path="res://scenes/Smoke.gd" type="Script" id=2]
 
 [sub_resource type="Gradient" id=1]
-colors = PoolColorArray( 0.320938, 0.320938, 0.320938, 1, 1, 1, 1, 1 )
+offsets = PoolRealArray( 0, 0.520147, 1 )
+colors = PoolColorArray( 0.320938, 0.320938, 0.320938, 1, 0.67415, 0.67415, 0.67415, 1, 1, 1, 1, 0 )
 
 [sub_resource type="GradientTexture" id=2]
 gradient = SubResource( 1 )
@@ -28,6 +30,7 @@ color_ramp = SubResource( 2 )
 
 [node name="Smoke" type="Node2D"]
 position = Vector2( 512, 450 )
+script = ExtResource( 2 )
 
 [node name="Particles2D" type="Particles2D" parent="."]
 amount = 40

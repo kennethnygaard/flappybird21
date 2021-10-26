@@ -4,16 +4,19 @@ var backgroundSprite = preload("res://scenes/BackgroundSprite.tscn")
 var pipe = preload("res://scenes/Pipe.tscn")
 var smoke = preload("res://scenes/Smoke.tscn")
 
+signal paused(is_paused)
+
 var screen_width = 1024
 var screen_height = 600
 var points = 0
 var bs = []
 var pipes = []
+var is_paused:bool = false
 
 onready var points_counter = $PointsCounter
 onready var player = $PlayerRoot/Player
 onready var restartMenu = $RestartMenu
-onready var ready = $Ready
+onready var readyMenu = $ReadyMenu
 
 
 func _ready():
@@ -35,7 +38,9 @@ func _process(delta):
 	$Smoke.global_position.x -= 300*delta
 	if($Smoke.global_position.x < -100):
 		$Smoke.global_position.x = 1100
-	pass
+	
+	if(Input.is_action_just_pressed("ui_cancel")):
+		emit_signal("paused")
 
 func setup_background():
 	for i in range(5):
@@ -73,5 +78,5 @@ func restart():
 	points_counter.set_points(points)
 	reset_pipes()
 	player.reset()
-	ready.set_visible(true)
+	readyMenu.set_visible(true)
 	restartMenu.set_visible(false)

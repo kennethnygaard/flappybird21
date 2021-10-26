@@ -1,19 +1,124 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://scenes/BackgroundScene.gd" type="Script" id=1]
 [ext_resource path="res://scenes/GameCamera.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/PointsCounter.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/ready.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/RestartMenu.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/Smoke.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/PauseMenu.tscn" type="PackedScene" id=8]
 
-[node name="BackgroundScene" type="Node"]
-script = ExtResource( 1 )
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+var backgroundSprite = preload(\"res://scenes/BackgroundSprite.tscn\")
+var pipe = preload(\"res://scenes/Pipe.tscn\")
+var smoke = preload(\"res://scenes/Smoke.tscn\")
+
+enum State {GET_READY, PLAYING, PAUSED, CRASHED}
+
+signal paused(is_paused)
+var is_paused:bool = false
+var scrolling = true
+
+var screen_width = 1024
+var screen_height = 600
+var points = 0
+var bs = []
+var pipes = []
+
+
+onready var points_counter = $PointsCounter
+onready var player = $PlayerRoot/Player
+onready var restartMenu = $RestartMenu
+onready var readyMenu = $ReadyMenu
+
+
+func _ready():
+	setup_background()
+	setup_pipes()
+	restartMenu.set_visible(false)
+	player.connect(\"disappeared_below\", self, \"show_restart_menu\")
+	restartMenu.connect(\"restart\", self, \"restart\")
+	player.connect(\"crashed\", self, \"on_crashed\")
+	
+
+func _process(delta):
+
+	if(!is_paused && scrolling):
+		$Smoke.global_position.x -= 300*delta
+	if($Smoke.global_position.x < -100):
+		$Smoke.global_position.x = 1100
+		
+	if(Input.is_action_just_pressed(\"ui_cancel\")):
+		is_paused = !is_paused
+		set_paused(is_paused)
+		emit_signal(\"paused\", is_paused)
+
+func setup_background():
+	for i in range(5):
+		bs.append(backgroundSprite.instance())
+		bs[i].set_pos(i)
+		add_child(bs[i])
+
+func setup_pipes():
+	for i in range(3):
+		pipes.append(pipe.instance())
+		add_child(pipes[i])
+		pipes[i].connect(\"point_collected\", self, \"on_point_collected\")
+		pipes[i].connect(\"crashed\", self, \"on_crashed\")	
+	reset_pipes()
+
+func on_point_collected():
+	points+=1
+	points_counter.set_points(points)
+
+func on_crashed():
+	for i in range(3):
+		pipes[i].stop_scrolling()
+	player.die()
+
+func show_restart_menu():
+	restartMenu.set_visible(true)	
+
+func reset_pipes():
+	for i in range(3):
+		pipes[i].set_x(300 + screen_width + 1500/3*i)
+		pipes[i].stop_scrolling()
+
+func restart():
+	points = 0
+	points_counter.set_points(points)
+	reset_pipes()
+	player.reset()
+	readyMenu.set_visible(true)
+	restartMenu.set_visible(false)
+	for i in range(5):
+		bs[i].scrolling = true
+	scrolling = true
+
+func set_paused(paused):
+	player.set_paused(is_paused)
+	$Smoke.set_paused(is_paused)
+	for i in range(3):
+		pipes[i].set_paused(is_paused)
+	for i in range(5):
+		bs[i].set_paused(is_paused)
+
+func crash():
+	scrolling = false
+	for i in range(5):
+		bs[i].scrolling = scrolling
+"
+
+[node name="BackgroundScene" type="Node" groups=[
+"main",
+]]
+script = SubResource( 1 )
 
 [node name="Camera2D" parent="." instance=ExtResource( 2 )]
 
-[node name="Ready" parent="." instance=ExtResource( 5 )]
+[node name="ReadyMenu" parent="." instance=ExtResource( 5 )]
 
 [node name="PointsCounter" parent="." instance=ExtResource( 4 )]
 
@@ -28,3 +133,5 @@ z_index = 1
 [node name="Smoke" parent="." instance=ExtResource( 7 )]
 position = Vector2( 1100, 610 )
 z_index = 1
+
+[node name="PauseMenu" parent="." instance=ExtResource( 8 )]

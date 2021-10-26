@@ -4,6 +4,7 @@ var scrollSpeed = 300
 var rng = RandomNumberGenerator.new()
 
 var scrolling = false
+var is_paused:bool = false
 
 signal point_collected
 signal crashed
@@ -25,7 +26,7 @@ func _ready():
 	player.connect("start_game", self, "on_start_game")
 
 func _process(delta):
-	if(scrolling):
+	if(scrolling && !is_paused):
 		global_position.x -= scrollSpeed*delta
 	if(global_position.x < -100):
 		reset_position()
@@ -54,3 +55,6 @@ func stop_scrolling():
 	
 func start_scrolling():
 	scrolling = true
+	
+func set_paused(paused):
+	is_paused = paused
