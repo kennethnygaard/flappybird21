@@ -1,0 +1,30 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/BackgroundScene.gd" type="Script" id=1]
+[ext_resource path="res://scenes/GameCamera.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/PointsCounter.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/ready.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/RestartMenu.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/Smoke.tscn" type="PackedScene" id=7]
+
+[node name="BackgroundScene" type="Node"]
+script = ExtResource( 1 )
+
+[node name="Camera2D" parent="." instance=ExtResource( 2 )]
+
+[node name="Ready" parent="." instance=ExtResource( 5 )]
+
+[node name="PointsCounter" parent="." instance=ExtResource( 4 )]
+
+[node name="PlayerRoot" type="Node2D" parent="."]
+
+[node name="Player" parent="PlayerRoot" instance=ExtResource( 3 )]
+position = Vector2( 100, 100 )
+z_index = 1
+
+[node name="RestartMenu" parent="." instance=ExtResource( 6 )]
+
+[node name="Smoke" parent="." instance=ExtResource( 7 )]
+position = Vector2( 1100, 610 )
+z_index = 1
