@@ -48,10 +48,10 @@ func _ready():
 
 func _process(delta):
 
-	if(!is_paused && scrolling):
-		$Smoke.global_position.x -= 300*delta
-	if($Smoke.global_position.x < -100):
-		$Smoke.global_position.x = 1100
+	#if(!is_paused && scrolling):
+	#	$Smoke.global_position.x -= 300*delta
+	#if($Smoke.global_position.x < -100):
+	#	$Smoke.global_position.x = 1100
 		
 	if(Input.is_action_just_pressed(\"ui_cancel\")):
 		is_paused = !is_paused
@@ -80,6 +80,7 @@ func on_crashed():
 	for i in range(3):
 		pipes[i].stop_scrolling()
 	player.die()
+	$Smoke.set_scrolling(false)
 
 func show_restart_menu():
 	restartMenu.set_visible(true)	
@@ -99,6 +100,7 @@ func restart():
 	for i in range(5):
 		bs[i].scrolling = true
 	scrolling = true
+	$Smoke.set_scrolling(scrolling)
 
 func set_paused(paused):
 	player.set_paused(is_paused)
@@ -162,11 +164,13 @@ z_index = 1
 [node name="PauseMenu" parent="." instance=ExtResource( 8 )]
 
 [node name="RocksParticleEmitter #1" type="Node2D" parent="."]
+visible = false
 position = Vector2( 1100, 600 )
 z_index = 100
 script = ExtResource( 9 )
 
 [node name="Particles2D" type="Particles2D" parent="RocksParticleEmitter #1"]
+visible = false
 material = SubResource( 3 )
 amount = 15
 lifetime = 10.0
@@ -174,10 +178,12 @@ process_material = SubResource( 2 )
 texture = ExtResource( 1 )
 
 [node name="RocksParticleEmitter" type="Node2D" parent="."]
+visible = false
 position = Vector2( 1100, 600 )
 z_index = 101
 
 [node name="Particles2D" type="Particles2D" parent="RocksParticleEmitter"]
+visible = false
 material = SubResource( 3 )
 amount = 20
 lifetime = 10.0
