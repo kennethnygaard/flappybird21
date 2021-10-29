@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=14 format=2]
 
+[ext_resource path="res://assets/rocks particles.png" type="Texture" id=1]
 [ext_resource path="res://scenes/GameCamera.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/PointsCounter.tscn" type="PackedScene" id=4]
@@ -7,6 +8,8 @@
 [ext_resource path="res://scenes/RestartMenu.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/Smoke.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/PauseMenu.tscn" type="PackedScene" id=8]
+[ext_resource path="res://RocksParticleEmitter.gd" type="Script" id=9]
+[ext_resource path="res://scenes/Particles2D.gd" type="Script" id=10]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
@@ -111,6 +114,28 @@ func crash():
 		bs[i].scrolling = scrolling
 "
 
+[sub_resource type="CanvasItemMaterial" id=3]
+particles_animation = true
+particles_anim_h_frames = 13
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="ParticlesMaterial" id=2]
+emission_shape = 2
+emission_box_extents = Vector3( 1, 20, 1 )
+flag_disable_z = true
+direction = Vector3( -1, 0, 0 )
+spread = 0.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 330.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+angle = 360.0
+angle_random = 1.0
+scale_random = 1.0
+anim_offset = 1.0
+anim_offset_random = 1.0
+
 [node name="BackgroundScene" type="Node" groups=[
 "main",
 ]]
@@ -135,3 +160,28 @@ position = Vector2( 1100, 610 )
 z_index = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource( 8 )]
+
+[node name="RocksParticleEmitter #1" type="Node2D" parent="."]
+position = Vector2( 1100, 600 )
+z_index = 100
+script = ExtResource( 9 )
+
+[node name="Particles2D" type="Particles2D" parent="RocksParticleEmitter #1"]
+material = SubResource( 3 )
+amount = 15
+lifetime = 10.0
+process_material = SubResource( 2 )
+texture = ExtResource( 1 )
+
+[node name="RocksParticleEmitter" type="Node2D" parent="."]
+position = Vector2( 1100, 600 )
+z_index = 101
+
+[node name="Particles2D" type="Particles2D" parent="RocksParticleEmitter"]
+material = SubResource( 3 )
+amount = 20
+lifetime = 10.0
+preprocess = 0.3
+process_material = SubResource( 2 )
+texture = ExtResource( 1 )
+script = ExtResource( 10 )
