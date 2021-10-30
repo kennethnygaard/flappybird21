@@ -29,7 +29,8 @@ var screen_height = 600
 var points = 0
 var bs = []
 var pipes = []
-
+var can_pause:bool = true
+var has_crashed:bool = false
 
 onready var points_counter = $PointsCounter
 onready var player = $PlayerRoot/Player
@@ -44,19 +45,14 @@ func _ready():
 	player.connect(\"disappeared_below\", self, \"show_restart_menu\")
 	restartMenu.connect(\"restart\", self, \"restart\")
 	player.connect(\"crashed\", self, \"on_crashed\")
-	
 
 func _process(delta):
-
-	#if(!is_paused && scrolling):
-	#	$Smoke.global_position.x -= 300*delta
-	#if($Smoke.global_position.x < -100):
-	#	$Smoke.global_position.x = 1100
 		
 	if(Input.is_action_just_pressed(\"ui_cancel\")):
-		is_paused = !is_paused
-		set_paused(is_paused)
-		emit_signal(\"paused\", is_paused)
+		if(can_pause):
+			is_paused = !is_paused
+			set_paused(is_paused)
+			emit_signal(\"paused\", is_paused)
 
 func setup_background():
 	for i in range(5):
@@ -81,9 +77,11 @@ func on_crashed():
 		pipes[i].stop_scrolling()
 	player.die()
 	$Smoke.set_scrolling(false)
+	has_crashed = true
 
 func show_restart_menu():
-	restartMenu.set_visible(true)	
+	restartMenu.set_visible(true)
+	can_pause = false
 
 func reset_pipes():
 	for i in range(3):
@@ -101,10 +99,15 @@ func restart():
 		bs[i].scrolling = true
 	scrolling = true
 	$Smoke.set_scrolling(scrolling)
+	can_pause = true
+	has_crashed = false
 
 func set_paused(paused):
 	player.set_paused(is_paused)
 	$Smoke.set_paused(is_paused)
+	if(!has_crashed):
+		$Smoke.set_scrolling(!is_paused)
+	
 	for i in range(3):
 		pipes[i].set_paused(is_paused)
 	for i in range(5):

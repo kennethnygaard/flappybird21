@@ -33,10 +33,10 @@ func set_paused(paused):
 	is_paused = paused
 	var speed_multiplier		
 	if(is_paused):
-		set_scrolling(false)
+		#set_scrolling(false)
 		speed_multiplier = 0
 	else:
-		set_scrolling(true)
+		#set_scrolling(true)
 		speed_multiplier = 1
 		
 		#$Particles2D.set_speed_scale(emit_speed)
