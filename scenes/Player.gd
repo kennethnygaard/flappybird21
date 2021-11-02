@@ -63,6 +63,7 @@ func process_paused(delta):
 
 func jump():
 	velocity.y = velocity.y / 2 - jumpStrength
+	$FlapAudioPlayer.play()
 
 func die():
 	jump()

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/flap7.mp3-dea901f299494d630d607b0efb6198c6.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/flap7.mp3"
+dest_files=[ "res://.import/flap7.mp3-dea901f299494d630d607b0efb6198c6.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

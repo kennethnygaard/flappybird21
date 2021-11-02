@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/flap5.mp3-c3b5d2126d3032cc8c17f212dc1e310c.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/flap5.mp3"
+dest_files=[ "res://.import/flap5.mp3-c3b5d2126d3032cc8c17f212dc1e310c.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
