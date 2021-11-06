@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=19 format=2]
 
+[ext_resource path="res://scenes/CloudEmitter.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/GameCamera.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/PointsCounter.tscn" type="PackedScene" id=4]
@@ -7,8 +8,15 @@
 [ext_resource path="res://scenes/RestartMenu.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/Smoke.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/PauseMenu.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/RainEmitter.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/SoundToggle.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Node.gd" type="Script" id=11]
 [ext_resource path="res://assets/audio/crash.mp3" type="AudioStream" id=12]
+[ext_resource path="res://Lightning.tscn" type="PackedScene" id=14]
+[ext_resource path="res://assets/audio/thunderclap2.mp3" type="AudioStream" id=15]
+[ext_resource path="res://assets/audio/thunderclap3.mp3" type="AudioStream" id=16]
+[ext_resource path="res://assets/audio/thunderclap1.mp3" type="AudioStream" id=17]
+[ext_resource path="res://assets/audio/rain.mp3" type="AudioStream" id=18]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node
@@ -35,7 +43,7 @@ onready var points_counter = $PointsCounter
 onready var player = $PlayerRoot/Player
 onready var restartMenu = $RestartMenu
 onready var readyMenu = $ReadyMenu
-
+onready var rain_speed_scale = $RainEmitter/Particles2D.get_speed_scale()
 
 func _ready():
 	setup_background()
@@ -44,6 +52,9 @@ func _ready():
 	player.connect(\"disappeared_below\", self, \"show_restart_menu\")
 	restartMenu.connect(\"restart\", self, \"restart\")
 	player.connect(\"crashed\", self, \"on_crashed\")
+	$PlayerRoot/Player/AnimatedSprite.play(\"fly\")
+	$SoundToggle.connect(\"toggle_sound\", self, \"on_sound_toggled\")
+	$RainAudioPlayer.play()
 
 func _process(delta):
 		
@@ -72,9 +83,9 @@ func on_point_collected():
 	points_counter.set_points(points)
 
 func on_crashed():
+	$PlayerRoot/Player/AnimatedSprite.play(\"dead\")
 	if(!has_crashed):
-		$AudioPlayer.play()
-		print(\"playing audio\")
+		$CrashAudioPlayer.play()
 	for i in range(3):
 		pipes[i].stop_scrolling()
 	player.die()
@@ -104,6 +115,7 @@ func restart():
 	$Smoke.set_scrolling(scrolling)
 	can_pause = true
 	has_crashed = false
+	$PlayerRoot/Player/AnimatedSprite.play(\"fly\")
 
 func set_paused(paused):
 	player.set_paused(is_paused)
@@ -115,11 +127,22 @@ func set_paused(paused):
 		pipes[i].set_paused(is_paused)
 	for i in range(5):
 		bs[i].set_paused(is_paused)
+	
+	$RainEmitter.set_paused(is_paused)
+	$CloudEmitter.set_paused(is_paused)
+	$Lightning.set_paused(is_paused)
 
 func crash():
 	scrolling = false
 	for i in range(5):
 		bs[i].scrolling = scrolling
+		
+func on_sound_toggled(is_on):
+	print(\"sound toggled\", is_on)
+	if(is_on):
+		$CrashAudioPlayer.update_bus_volume(\"SFX\", 0.4)
+	else:
+		$CrashAudioPlayer.update_bus_volume(\"SFX\", 0)
 "
 
 [node name="BackgroundScene" type="Node" groups=[
@@ -135,6 +158,10 @@ current = true
 
 [node name="PointsCounter" parent="." instance=ExtResource( 4 )]
 
+[node name="RainEmitter" parent="." instance=ExtResource( 9 )]
+
+[node name="CloudEmitter" parent="." instance=ExtResource( 1 )]
+
 [node name="PlayerRoot" type="Node2D" parent="."]
 
 [node name="Player" parent="PlayerRoot" instance=ExtResource( 3 )]
@@ -144,13 +171,44 @@ z_index = 1
 [node name="RestartMenu" parent="." instance=ExtResource( 6 )]
 
 [node name="Smoke" parent="." instance=ExtResource( 7 )]
+visible = false
 position = Vector2( 1100, 610 )
 z_index = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource( 8 )]
 
-[node name="AudioPlayer" type="Node" parent="."]
+[node name="CrashAudioPlayer" type="Node" parent="."]
 script = ExtResource( 11 )
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AudioPlayer"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CrashAudioPlayer"]
 stream = ExtResource( 12 )
+bus = "Crash"
+
+[node name="RainAudioPlayer" type="Node" parent="."]
+script = ExtResource( 11 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="RainAudioPlayer"]
+stream = ExtResource( 18 )
+bus = "Rain"
+
+[node name="SoundToggle" parent="." instance=ExtResource( 10 )]
+
+[node name="Lightning" parent="." instance=ExtResource( 14 )]
+z_index = 1000
+
+[node name="ThunderAudioPlayer" type="Node" parent="." groups=[
+"thunderaudio",
+]]
+script = ExtResource( 11 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="ThunderAudioPlayer"]
+stream = ExtResource( 17 )
+bus = "Thunder"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="ThunderAudioPlayer"]
+stream = ExtResource( 15 )
+bus = "Thunder"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="ThunderAudioPlayer"]
+stream = ExtResource( 16 )
+bus = "Thunder"

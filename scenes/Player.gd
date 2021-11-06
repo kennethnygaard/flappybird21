@@ -80,6 +80,10 @@ func reset():
 
 func set_paused(paused):
 	is_paused = paused
+	if(is_paused):
+		$AnimatedSprite.stop()
+	else:
+		$AnimatedSprite.play()
 
 func unpause():
 	is_paused = false	

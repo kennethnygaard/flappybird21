@@ -13,6 +13,7 @@ extents = Vector2( 59.3543, 428.465 )
 extents = Vector2( 56.9, 482.238 )
 
 [node name="Pipe" type="Node2D"]
+z_index = 2
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

@@ -1,5 +1,7 @@
 extends Particles2D
 
+
+
 func _ready():
 	global_position.y = global_position.y + 20
 

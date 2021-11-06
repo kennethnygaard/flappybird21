@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Ketsa - No-Wing.mp3-795eae6b91bcf78b7eaec18c94409dd5.mp3str"
+
+[deps]
+
+source_file="res://assets/music/Ketsa - No-Wing.mp3"
+dest_files=[ "res://.import/Ketsa - No-Wing.mp3-795eae6b91bcf78b7eaec18c94409dd5.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

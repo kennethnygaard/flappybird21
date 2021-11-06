@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Ketsa - Derived.mp3-e4a45de369bfb4efe5e7b6a6a895c551.mp3str"
+
+[deps]
+
+source_file="res://assets/music/Ketsa - Derived.mp3"
+dest_files=[ "res://.import/Ketsa - Derived.mp3-e4a45de369bfb4efe5e7b6a6a895c551.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

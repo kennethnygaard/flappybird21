@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/thunderclap2.mp3-e40514241473f40d7c5d13c959eb7f5a.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/thunderclap2.mp3"
+dest_files=[ "res://.import/thunderclap2.mp3-e40514241473f40d7c5d13c959eb7f5a.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -5,6 +5,7 @@
 
 [node name="Sprite" type="Sprite"]
 scale = Vector2( 2.35, 2.35 )
+z_index = -10
 texture = ExtResource( 1 )
 centered = false
 script = ExtResource( 2 )
